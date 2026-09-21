@@ -26,6 +26,24 @@ Se usan dos carpetas independientes, sin herramientas de monorepo (Nx/Turborepo)
 alcance de esta prueba, ese tooling agrega complejidad que no aporta a los criterios de
 evaluación (funcionalidad, calidad de código, diseño de API/datos, validaciones, git).
 
+## Opción rápida: todo con un solo comando (Docker)
+
+```bash
+git clone <URL_DEL_REPO>
+cd baldecash-solicitudes
+docker compose up --build
+```
+
+Levanta PostgreSQL, el backend (con migraciones y seed automáticos) y el frontend.
+Cuando los 3 contenedores estén listos:
+- API: `http://localhost:3000`
+- Frontend: `http://localhost:3001`
+
+**No lo corras al mismo tiempo que la sección "PostgreSQL local" de abajo** — ambos
+intentan usar el puerto `5435` para la base de datos y van a chocar (el mismo problema
+de puerto ocupado que documentamos más abajo). Usa esta opción de Docker completo **o**
+la guía paso a paso manual, no las dos a la vez.
+
 ## Cómo levantar el proyecto desde cero
 
 ### Requisitos previos
