@@ -3,9 +3,8 @@
 Prueba técnica FullStack Developer Junior. API que registra y consulta solicitudes de
 financiamiento de laptops/equipos electrónicos, más una interfaz web para enviarlas y revisarlas.
 
-**Estado actual:** Paso 3 completado: frontend en Next.js (App Router) con
-formulario de solicitud y listado paginado, consumiendo la API del backend.
-Este README se actualiza al final de cada fase.
+**Estado actual:** Completo. Backend, frontend y los 4 opcionales del enunciado
+implementados y verificados (tests, `PATCH` de estado, tasa configurable, Docker completo).
 
 ## Stack
 
@@ -69,9 +68,17 @@ npm install
 cp .env.example .env
 ```
 
-| Variable       | Descripción                                    | Valor por defecto (docker-compose)                              |
-| -------------- | ----------------------------------------------- | ----------------------------------------------------------------- |
-| `DATABASE_URL` | Cadena de conexión a PostgreSQL.                 | `postgresql://baldecash:baldecash@localhost:5435/baldecash`       |
+| Variable              | Descripción                                             | Valor por defecto                                            |
+| --------------------- | -------------------------------------------------------- | -------------------------------------------------------------- |
+| `DATABASE_URL`        | Cadena de conexión a PostgreSQL.                          | `postgresql://baldecash:baldecash@localhost:5435/baldecash`    |
+| `FRONTEND_URL`        | Origen permitido por CORS.                                | `http://localhost:3001`                                        |
+| `TASA_INTERES_ANUAL`  | Tasa anual usada en el cálculo de la cuota (0.24 = 24%).  | `0.24`                                                          |
+
+El frontend usa su propia variable, en `frontend/.env.local` (ver `.env.local.example`):
+
+| Variable               | Descripción                  | Valor por defecto        |
+| ----------------------- | ----------------------------- | -------------------------- |
+| `NEXT_PUBLIC_API_URL`  | URL base de la API del backend. | `http://localhost:3000`   |
 
 ### 3. Levantar PostgreSQL
 
@@ -226,8 +233,42 @@ La fórmula de la cuota se verificó de forma aislada contra el ejemplo del enun
   vía `FRONTEND_URL`, en vez de un proxy o un dominio wildcard — explícito y suficiente para
   desarrollo local.
 
+## Qué dejé fuera y qué haría con más tiempo
+
+Deliberadamente fuera de alcance:
+- **Autenticación/autorización**: el enunciado no la pide; `POST` y `GET /solicitudes`
+  están abiertos. Con más tiempo, el `PATCH /solicitudes/:id/estado` (cambiar a
+  aprobada/rechazada) es la operación que más se beneficiaría de estar protegida —
+  hoy cualquiera que tenga la URL puede aprobar o rechazar solicitudes.
+- **Tests del frontend** (componentes, integración): solo se testeó el cálculo de la
+  cuota en el backend. Con más tiempo agregaría tests de `SolicitudForm` (que muestre
+  los errores correctos por campo) y de `lib/api.ts`.
+- **Tests e2e del backend** (`test/app.e2e-spec.ts` quedó con el ejemplo por defecto de
+  Nest, sin adaptarlo a `/solicitudes`): un test que levante la app contra una base de
+  datos de prueba y pegue contra `POST`/`GET`/`PATCH` reales.
+- **Índice en `estado`** a nivel de base de datos: con 3 registros no importa, pero si
+  `GET /solicitudes?estado=` fuera a operar sobre una tabla grande, un índice en esa
+  columna sería la primera optimización.
+- **Manejo de duplicados**: hoy se puede crear más de una solicitud con el mismo DNI.
+  No estaba en los requisitos, pero en un caso real probablemente se querría restringir
+  o al menos advertir.
+- **Dockerfiles de producción** (multi-stage build, `next build`/`nest build` en vez de
+  modo watch): los Dockerfiles actuales corren en modo desarrollo dentro del contenedor,
+  suficiente para el alcance de "levantar el proyecto completo con un comando" de esta
+  prueba, pero no son los que usaría para desplegar a un entorno real.
+
 ## Herramientas de IA utilizadas
 
-- **Claude** (Anthropic): configuración inicial del proyecto backend (scaffold NestJS,
-  configuración de Prisma 7 + PostgreSQL, modelo de datos, seeder), y redacción de este
-  README, guiado paso a paso con explicación de cada decisión técnica.
+- **Claude** (Anthropic), usado de forma guiada e iterativa (fase por fase, con
+  explicación de cada decisión antes de avanzar) para:
+  - Scaffold y configuración del backend (NestJS, Prisma 7, PostgreSQL, Docker).
+  - Implementación de los DTOs de validación, el servicio/controlador de `solicitudes`,
+    el manejo global de errores (422/500), y los 4 opcionales.
+  - Scaffold y componentes del frontend (Next.js App Router, formulario, tabla paginada,
+    cliente de API tipado).
+  - Diagnóstico de los problemas reales que aparecieron al levantar el proyecto
+    (conflictos de puerto, binarios de plataforma, versión de Prisma) — documentados en
+    detalle más arriba, no ocultados.
+  - Redacción de este README.
+  - Todo el código generado fue revisado, ejecutado y verificado con salidas reales
+    (`curl`, `npm run test`, `docker compose up`) antes de darlo por cerrado.
