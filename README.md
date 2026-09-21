@@ -30,7 +30,7 @@ evaluación (funcionalidad, calidad de código, diseño de API/datos, validacion
 
 ```bash
 git clone <URL_DEL_REPO>
-cd baldecash-solicitudes
+cd Prueba-tecnica-de-baldecash
 docker compose up --build
 ```
 
@@ -44,6 +44,8 @@ intentan usar el puerto `5435` para la base de datos y van a chocar (el mismo pr
 de puerto ocupado que documentamos más abajo). Usa esta opción de Docker completo **o**
 la guía paso a paso manual, no las dos a la vez.
 
+Si sus puertos estan siendo utilizandos tendia que matarlos o sino cambiar los puertos que se estan utilizando.
+
 ## Cómo levantar el proyecto desde cero
 
 ### Requisitos previos
@@ -55,7 +57,7 @@ la guía paso a paso manual, no las dos a la vez.
 
 ```bash
 git clone <URL_DEL_REPO>
-cd baldecash-solicitudes/backend
+cd Prueba-tecnica-de-baldecash/backend
 npm install
 ```
 
@@ -89,6 +91,8 @@ docker compose up -d
 
 Esto levanta un contenedor `postgres:16-alpine` en el puerto `5435` con las credenciales
 de `.env.example`.
+
+Si no levanta o no reconoce tu docker en Ubuntu WSL, tienes que abrir docker desktop entrar a settings/resources/WSL integration y activar la integracion
 
 ### 4. Generar el cliente de Prisma, migrar y sembrar datos
 
