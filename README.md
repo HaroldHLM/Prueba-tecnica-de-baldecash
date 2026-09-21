@@ -4,7 +4,8 @@ Prueba técnica FullStack Developer Junior. API que registra y consulta solicitu
 financiamiento de laptops/equipos electrónicos, más una interfaz web para enviarlas y revisarlas.
 
 **Estado actual:** Completo. Backend, frontend y los 4 opcionales del enunciado
-implementados y verificados (tests, `PATCH` de estado, tasa configurable, Docker completo).
+implementados y verificados (tests, `PATCH` de estado, tasa configurable, Docker completo),
+más una pasada de limpieza de código y ajustes de estilo/marca en el frontend.
 
 ## Stack
 
@@ -232,6 +233,14 @@ La fórmula de la cuota se verificó de forma aislada contra el ejemplo del enun
 - **CORS habilitado en el backend** (`app.enableCors`) apuntando a `http://localhost:3001`
   vía `FRONTEND_URL`, en vez de un proxy o un dominio wildcard — explícito y suficiente para
   desarrollo local.
+- **Modo claro forzado y paleta de marca**: `globals.css` fijaba `--foreground` según
+  `prefers-color-scheme`, así que con el sistema operativo en modo oscuro el texto (heredado,
+  sin `text-*` explícito) quedaba claro sobre fondos blancos en inputs y tablas —
+  prácticamente ilegible. Se fijó `color-scheme: light` (el módulo no depende del tema del
+  SO) y se declaró `bg-white`/`text-slate-900` explícito en inputs, selects y celdas. De
+  paso se reemplazó el azul/gris genérico de Tailwind por los colores reales de BaldeCash
+  (turquesa `#03DBD0` y dorado `#FECA52`, tomados de la ficha de marca pública de la empresa)
+  en el logo, botones, foco de inputs y badges de estado.
 
 ## Qué dejé fuera y qué haría con más tiempo
 
@@ -243,8 +252,9 @@ Deliberadamente fuera de alcance:
 - **Tests del frontend** (componentes, integración): solo se testeó el cálculo de la
   cuota en el backend. Con más tiempo agregaría tests de `SolicitudForm` (que muestre
   los errores correctos por campo) y de `lib/api.ts`.
-- **Tests e2e del backend** (`test/app.e2e-spec.ts` quedó con el ejemplo por defecto de
-  Nest, sin adaptarlo a `/solicitudes`): un test que levante la app contra una base de
+- **Tests e2e del backend**: no se implementaron. Se eliminó el `test/app.e2e-spec.ts`
+  por defecto de Nest (probaba una ruta `Hello World` que ya no existe) en vez de dejarlo
+  sin adaptar; con más tiempo agregaría un test que levante la app contra una base de
   datos de prueba y pegue contra `POST`/`GET`/`PATCH` reales.
 - **Índice en `estado`** a nivel de base de datos: con 3 registros no importa, pero si
   `GET /solicitudes?estado=` fuera a operar sobre una tabla grande, un índice en esa
@@ -256,6 +266,25 @@ Deliberadamente fuera de alcance:
   modo watch): los Dockerfiles actuales corren en modo desarrollo dentro del contenedor,
   suficiente para el alcance de "levantar el proyecto completo con un comando" de esta
   prueba, pero no son los que usaría para desplegar a un entorno real.
+
+## Limpieza de código
+
+Una pasada final sobre el proyecto para dejarlo listo para revisión:
+
+- **Comentarios**: se quitaron los bloques JSDoc/explicativos que quedaron de la
+  generación asistida (en `calcular-cuota.util.ts`, `main.ts`, `seed.ts`,
+  `solicitudes.service.ts`, `all-exceptions.filter.ts`, `config.ts`, `lib/api.ts`). El
+  código queda autoexplicativo por los nombres de función/variable en español; las
+  decisiones de diseño no triviales están documentadas acá, en el README, no como
+  comentarios sueltos en el código.
+- **Código sin usar**: se eliminó el boilerplate "Hello World" que deja el scaffold de
+  Nest (`app.controller.ts`, `app.service.ts`, `app.controller.spec.ts`) y el
+  `test/app.e2e-spec.ts` por defecto que dependía de esa ruta — no eran parte del
+  módulo de solicitudes y no se usaban en ningún lado.
+- **Código repetido**: el arreglo `['pendiente', 'aprobada', 'rechazada']` estaba
+  definido dos veces, literalmente igual, en `query-solicitudes.dto.ts` y
+  `update-estado.dto.ts`. Se extrajo a `src/solicitudes/estados.constant.ts` como única
+  fuente de verdad para ambos DTOs.
 
 ## Herramientas de IA utilizadas
 
