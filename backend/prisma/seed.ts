@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { PrismaClient } from '../src/generated/prisma/client.js';
 import { PrismaPg } from '@prisma/adapter-pg';
 import { calcularCuotaMensual } from '../src/common/calcular-cuota.util.js';
+import { TASA_INTERES_ANUAL } from '../src/common/config.js';
 
 const adapter = new PrismaPg({
   connectionString: process.env.DATABASE_URL as string,
@@ -41,7 +42,7 @@ const solicitudes = [
 async function main() {
   for (const s of solicitudes) {
     await prisma.solicitud.create({
-      data: { ...s, cuotaMensual: calcularCuotaMensual(s.monto, s.plazoMeses) },
+      data: { ...s, cuotaMensual: calcularCuotaMensual(s.monto, s.plazoMeses, TASA_INTERES_ANUAL) },
     });
   }
   console.log(`Seed completado: ${solicitudes.length} solicitudes creadas.`);

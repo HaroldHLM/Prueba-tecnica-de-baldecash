@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { calcularCuotaMensual } from '../common/calcular-cuota.util.js';
+import { TASA_INTERES_ANUAL } from '../common/config.js';
 import { CreateSolicitudDto } from './dto/create-solicitud.dto.js';
 import { QuerySolicitudesDto } from './dto/query-solicitudes.dto.js';
 
@@ -26,7 +27,11 @@ export class SolicitudesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(dto: CreateSolicitudDto) {
-    const cuotaMensual = calcularCuotaMensual(dto.monto, dto.plazoMeses);
+    const cuotaMensual = calcularCuotaMensual(
+      dto.monto,
+      dto.plazoMeses,
+      TASA_INTERES_ANUAL,
+    );
 
     const solicitud = await this.prisma.solicitud.create({
       data: { ...dto, cuotaMensual },
