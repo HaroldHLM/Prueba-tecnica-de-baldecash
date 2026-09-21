@@ -3,23 +3,22 @@
 Prueba técnica FullStack Developer Junior. API que registra y consulta solicitudes de
 financiamiento de laptops/equipos electrónicos, más una interfaz web para enviarlas y revisarlas.
 
-**Estado actual:** Paso 2 completado y verificado: API con `POST /solicitudes` y
-`GET /solicitudes` funcionando contra PostgreSQL, validaciones devolviendo HTTP 422 con
-detalle por campo, y 6 tests unitarios en verde (opcional #1 del enunciado).
+**Estado actual:** Paso 3 completado: frontend en Next.js (App Router) con
+formulario de solicitud y listado paginado, consumiendo la API del backend.
 Este README se actualiza al final de cada fase.
 
 ## Stack
 
 - **Backend:** NestJS (TypeScript), Node.js 22+.
 - **Base de datos:** PostgreSQL 16, vía Prisma ORM 7.
-- **Frontend:** Next.js + TypeScript + Tailwind (Paso 3, pendiente).
+- **Frontend:** Next.js (App Router) + TypeScript + Tailwind CSS.
 
 ## Estructura del repositorio
 
 ```
 baldecash-solicitudes/
 ├── backend/    # API NestJS + Prisma
-├── frontend/   # Next.js (pendiente)
+├── frontend/   # Next.js (App Router)
 └── README.md
 ```
 
@@ -86,6 +85,21 @@ Verificación opcional: `npx prisma studio` para inspeccionar la tabla `solicitu
 ```bash
 npm run start:dev
 ```
+
+### 6. Levantar el frontend
+
+En otra terminal:
+
+```bash
+cd ../frontend
+cp .env.local.example .env.local
+npm install
+npm run dev
+```
+
+Abre `http://localhost:3001`:
+- `/` — formulario de solicitud.
+- `/solicitudes` — listado paginado con filtro por estado.
 
 ## Endpoints de la API
 
@@ -166,6 +180,25 @@ La fórmula de la cuota se verificó de forma aislada contra el ejemplo del enun
 (P=3000, n=12 → S/ 283.68) antes de sembrar los datos, y la migración inicial
 (`prisma/migrations/20260921001808_init/`) fue generada por el propio CLI de Prisma
 (`prisma migrate dev`), no escrita a mano.
+
+## Decisiones técnicas — Paso 3 (frontend)
+
+- **App Router** (`app/`) en vez de Pages Router: es el estándar actual de Next.js.
+- **Dos rutas simples** (`/` para el formulario, `/solicitudes` para el listado) en vez de
+  una sola página con pestañas: URLs directas para cada vista, sin necesidad de manejar
+  estado de "vista activa".
+- **`fetch` nativo + `useState`/`useEffect`**, sin librerías de data-fetching (React Query,
+  SWR) ni de formularios (React Hook Form): para dos formularios/vistas simples,
+  agregar esas dependencias es complejidad que no se justifica en el alcance de esta prueba.
+- **`lib/api.ts` como única capa de acceso a la API**: los componentes no llaman `fetch`
+  directamente ni conocen el formato de error del backend; `ApiValidationError` encapsula
+  el caso 422 para que el formulario solo tenga que hacer `catch` y mapear `campo → motivo`.
+- **Tailwind CSS** para estilos: utilidades directas en el JSX, sin CSS aparte que mantener
+  sincronizado, coherente con "prioriza que sea claro y usable" del enunciado (no se evalúa
+  estética).
+- **CORS habilitado en el backend** (`app.enableCors`) apuntando a `http://localhost:3001`
+  vía `FRONTEND_URL`, en vez de un proxy o un dominio wildcard — explícito y suficiente para
+  desarrollo local.
 
 ## Herramientas de IA utilizadas
 
