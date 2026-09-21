@@ -3,7 +3,9 @@
 Prueba técnica FullStack Developer Junior. API que registra y consulta solicitudes de
 financiamiento de laptops/equipos electrónicos, más una interfaz web para enviarlas y revisarlas.
 
-**Estado actual:** Paso 1 completado y verificado: migración aplicada y 3 solicitudes sembradas en PostgreSQL local.
+**Estado actual:** Paso 2 completado y verificado: API con `POST /solicitudes` y
+`GET /solicitudes` funcionando contra PostgreSQL, validaciones devolviendo HTTP 422 con
+detalle por campo, y 6 tests unitarios en verde (opcional #1 del enunciado).
 Este README se actualiza al final de cada fase.
 
 ## Stack
@@ -84,6 +86,34 @@ Verificación opcional: `npx prisma studio` para inspeccionar la tabla `solicitu
 ```bash
 npm run start:dev
 ```
+
+## Endpoints de la API
+
+| Endpoint | Descripción |
+| --- | --- |
+| `POST /solicitudes` | Crea una solicitud. Valida los datos, calcula la cuota mensual y persiste con estado `pendiente`. Devuelve `201` con el registro creado (incluida la cuota). |
+| `GET /solicitudes?page=&limit=&estado=` | Lista solicitudes paginadas. `estado` es opcional (`pendiente`, `aprobada`, `rechazada`). Devuelve `{ data, total, page, limit }`. |
+
+Errores de validación devuelven `422` con el detalle de cada campo:
+```json
+{
+  "statusCode": 422,
+  "message": "Error de validación",
+  "errores": [
+    { "campo": "monto", "motivo": "El monto mínimo es S/ 1,000" }
+  ]
+}
+```
+
+## Tests
+
+```bash
+npm run test
+```
+
+Cubre el cálculo de la cuota (`calcularCuotaMensual`): el ejemplo del enunciado
+(P=3000, n=12 → 283.68), los límites de plazo (6 y 24 meses) y que a mayor plazo la
+cuota mensual baja.
 
 ## Decisiones técnicas — Paso 1 (base de datos)
 
