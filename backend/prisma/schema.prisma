@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EstadoSolicitud {
+  pendiente
+  aprobada
+  rechazada
+}
+
+model Solicitud {
+  id             Int             @id @default(autoincrement())
+  nombreCompleto String
+  dni            String          @db.VarChar(8)
+  correo         String
+  telefono       String          @db.VarChar(9)
+  monto          Decimal         @db.Decimal(10, 2)
+  plazoMeses     Int
+  cuotaMensual   Decimal         @db.Decimal(10, 2)
+  estado         EstadoSolicitud @default(pendiente)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@map("solicitudes")
+}
