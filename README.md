@@ -101,12 +101,21 @@ Abre `http://localhost:3001`:
 - `/` — formulario de solicitud.
 - `/solicitudes` — listado paginado con filtro por estado.
 
+## Opcionales resueltos
+
+- [x] Tests unitarios del cálculo de la cuota.
+- [x] `PATCH /solicitudes/:id/estado` para cambiar el estado desde el listado.
+- [x] Tasa de interés como variable de entorno (`TASA_INTERES_ANUAL`) en vez de valor fijo.
+- [ ] `docker-compose.yml` que levante el proyecto completo con un comando (solo se
+      dockerizó PostgreSQL; backend y frontend corren con `npm run dev`/`start:dev`).
+
 ## Endpoints de la API
 
 | Endpoint | Descripción |
 | --- | --- |
 | `POST /solicitudes` | Crea una solicitud. Valida los datos, calcula la cuota mensual y persiste con estado `pendiente`. Devuelve `201` con el registro creado (incluida la cuota). |
 | `GET /solicitudes?page=&limit=&estado=` | Lista solicitudes paginadas. `estado` es opcional (`pendiente`, `aprobada`, `rechazada`). Devuelve `{ data, total, page, limit }`. |
+| `PATCH /solicitudes/:id/estado` | Cambia el estado de una solicitud. Body: `{ "estado": "aprobada" }`. Devuelve `404` si el id no existe. |
 
 Errores de validación devuelven `422` con el detalle de cada campo:
 ```json
