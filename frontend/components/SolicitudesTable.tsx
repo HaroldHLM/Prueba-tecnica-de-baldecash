@@ -13,8 +13,8 @@ const ESTADOS: { value: EstadoSolicitud | ''; label: string }[] = [
 ];
 
 const COLOR_ESTADO: Record<EstadoSolicitud, string> = {
-  pendiente: 'bg-yellow-100 text-yellow-800',
-  aprobada: 'bg-green-100 text-green-800',
+  pendiente: 'bg-[#fff3d6] text-[#8a6416]',
+  aprobada: 'bg-[#e0fbfa] text-[#029b93]',
   rechazada: 'bg-red-100 text-red-800',
 };
 
@@ -61,7 +61,7 @@ export default function SolicitudesTable() {
             setEstado(e.target.value as EstadoSolicitud | '');
             setPage(1);
           }}
-          className="rounded-md border border-gray-300 px-3 py-2 text-sm"
+          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#03dbd0] focus:outline-none focus:ring-1 focus:ring-[#03dbd0]"
         >
           {ESTADOS.map((e) => (
             <option key={e.value} value={e.value}>
@@ -69,16 +69,16 @@ export default function SolicitudesTable() {
             </option>
           ))}
         </select>
-        <span className="text-sm text-gray-500">{total} solicitudes en total</span>
+        <span className="text-sm text-slate-600">{total} solicitudes en total</span>
       </div>
 
       {error && (
         <p className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-700">{error}</p>
       )}
 
-      <div className="overflow-x-auto rounded-lg border border-gray-200">
-        <table className="min-w-full divide-y divide-gray-200 text-sm">
-          <thead className="bg-gray-50">
+      <div className="overflow-x-auto rounded-lg border border-slate-200">
+        <table className="min-w-full divide-y divide-slate-200 text-sm">
+          <thead className="bg-slate-50">
             <tr>
               <Th>Nombre</Th>
               <Th>DNI</Th>
@@ -89,27 +89,27 @@ export default function SolicitudesTable() {
               <Th>Fecha</Th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100 bg-white">
+          <tbody className="divide-y divide-slate-100 bg-white">
             {cargando ? (
               <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-gray-500">
+                <td colSpan={7} className="px-4 py-6 text-center text-slate-500">
                   Cargando...
                 </td>
               </tr>
             ) : data.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-4 py-6 text-center text-gray-500">
+                <td colSpan={7} className="px-4 py-6 text-center text-slate-500">
                   No hay solicitudes para este filtro.
                 </td>
               </tr>
             ) : (
               data.map((s) => (
                 <tr key={s.id}>
-                  <td className="px-4 py-3">{s.nombreCompleto}</td>
-                  <td className="px-4 py-3">{s.dni}</td>
-                  <td className="px-4 py-3">S/ {s.monto.toFixed(2)}</td>
-                  <td className="px-4 py-3">{s.plazoMeses} meses</td>
-                  <td className="px-4 py-3">S/ {s.cuotaMensual.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-slate-800">{s.nombreCompleto}</td>
+                  <td className="px-4 py-3 text-slate-800">{s.dni}</td>
+                  <td className="px-4 py-3 text-slate-800">S/ {s.monto.toFixed(2)}</td>
+                  <td className="px-4 py-3 text-slate-800">{s.plazoMeses} meses</td>
+                  <td className="px-4 py-3 text-slate-800">S/ {s.cuotaMensual.toFixed(2)}</td>
                   <td className="px-4 py-3">
                     <span
                       className={`rounded-full px-2 py-1 text-xs font-medium ${COLOR_ESTADO[s.estado]}`}
@@ -117,7 +117,7 @@ export default function SolicitudesTable() {
                       {s.estado}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-gray-500">
+                  <td className="px-4 py-3 text-slate-500">
                     {new Date(s.createdAt).toLocaleDateString('es-PE')}
                   </td>
                 </tr>
@@ -127,11 +127,11 @@ export default function SolicitudesTable() {
         </table>
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-sm">
+      <div className="mt-4 flex items-center justify-between text-sm text-slate-700">
         <button
           onClick={() => setPage((p) => Math.max(1, p - 1))}
           disabled={page <= 1}
-          className="rounded-md border border-gray-300 px-3 py-1.5 disabled:opacity-40"
+          className="rounded-md border border-slate-300 px-3 py-1.5 hover:border-[#03dbd0] disabled:opacity-40 disabled:hover:border-slate-300"
         >
           Anterior
         </button>
@@ -141,7 +141,7 @@ export default function SolicitudesTable() {
         <button
           onClick={() => setPage((p) => Math.min(totalPaginas, p + 1))}
           disabled={page >= totalPaginas}
-          className="rounded-md border border-gray-300 px-3 py-1.5 disabled:opacity-40"
+          className="rounded-md border border-slate-300 px-3 py-1.5 hover:border-[#03dbd0] disabled:opacity-40 disabled:hover:border-slate-300"
         >
           Siguiente
         </button>
@@ -152,7 +152,7 @@ export default function SolicitudesTable() {
 
 function Th({ children }: { children: React.ReactNode }) {
   return (
-    <th className="px-4 py-2 text-left text-xs font-semibold uppercase text-gray-500">
+    <th className="px-4 py-2 text-left text-xs font-semibold uppercase text-slate-600">
       {children}
     </th>
   );

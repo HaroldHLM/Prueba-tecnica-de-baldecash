@@ -24,14 +24,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-gray-50">
-        <header className="border-b border-gray-200 bg-white">
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
+        <header className="border-b border-slate-200 bg-white">
           <nav className="mx-auto flex max-w-4xl items-center gap-6 px-4 py-3 text-sm font-medium">
-            <span className="font-bold text-blue-600">BaldeCash</span>
-            <Link href="/" className="text-gray-600 hover:text-gray-900">
+            <span className="flex items-center gap-2 font-bold text-[#029b93]">
+              <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#feca52]" />
+              BaldeCash
+            </span>
+            <Link href="/" className="text-slate-600 hover:text-[#029b93]">
               Nueva solicitud
             </Link>
-            <Link href="/solicitudes" className="text-gray-600 hover:text-gray-900">
+            <Link href="/solicitudes" className="text-slate-600 hover:text-[#029b93]">
               Listado
             </Link>
           </nav>

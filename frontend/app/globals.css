@@ -2,21 +2,33 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1e293b;
+  --color-brand: #03dbd0;
+  --color-brand-dark: #029b93;
+  --color-brand-light: #e0fbfa;
+  --color-accent: #feca52;
+  --color-accent-dark: #d99f22;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand: var(--color-brand);
+  --color-brand-dark: var(--color-brand-dark);
+  --color-brand-light: var(--color-brand-light);
+  --color-accent: var(--color-accent);
+  --color-accent-dark: var(--color-accent-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/*
+  El módulo siempre se muestra en modo claro (BaldeCash aún no tiene
+  una versión oscura de su marca), sin depender de las preferencias
+  del sistema operativo del usuario.
+*/
+:root {
+  color-scheme: light;
 }
 
 body {

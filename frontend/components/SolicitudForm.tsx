@@ -75,20 +75,20 @@ export default function SolicitudForm() {
 
   if (estado === 'exito' && solicitudCreada) {
     return (
-      <div className="rounded-lg border border-green-200 bg-green-50 p-6 text-center">
-        <p className="text-sm font-medium text-green-800">
+      <div className="rounded-lg border border-[#03dbd0]/40 bg-[#e0fbfa] p-6 text-center">
+        <p className="text-sm font-medium text-[#029b93]">
           Solicitud enviada correctamente
         </p>
-        <p className="mt-2 text-3xl font-bold text-green-900">
+        <p className="mt-2 text-3xl font-bold text-slate-900">
           S/ {solicitudCreada.cuotaMensual.toFixed(2)}
-          <span className="text-base font-normal text-green-700"> / mes</span>
+          <span className="text-base font-normal text-slate-600"> / mes</span>
         </p>
-        <p className="mt-1 text-sm text-green-700">
+        <p className="mt-1 text-sm text-slate-600">
           {solicitudCreada.plazoMeses} cuotas · Estado: {solicitudCreada.estado}
         </p>
         <button
           onClick={enviarOtraSolicitud}
-          className="mt-4 rounded-md bg-green-700 px-4 py-2 text-sm font-medium text-white hover:bg-green-800"
+          className="mt-4 rounded-md bg-[#029b93] px-4 py-2 text-sm font-medium text-white hover:bg-[#027d76]"
         >
           Enviar otra solicitud
         </button>
@@ -135,11 +135,11 @@ export default function SolicitudForm() {
       />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">Plazo</label>
+        <label className="block text-sm font-medium text-slate-800">Plazo</label>
         <select
           value={form.plazoMeses}
           onChange={(e) => actualizarCampo('plazoMeses', e.target.value)}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[#03dbd0] focus:outline-none focus:ring-1 focus:ring-[#03dbd0]"
         >
           {PLAZOS_DISPONIBLES.map((p) => (
             <option key={p} value={p}>
@@ -159,7 +159,7 @@ export default function SolicitudForm() {
       <button
         type="submit"
         disabled={estado === 'cargando'}
-        className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full rounded-md bg-[#029b93] px-4 py-2 text-sm font-medium text-white hover:bg-[#027d76] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {estado === 'cargando' ? 'Enviando...' : 'Enviar solicitud'}
       </button>
@@ -184,14 +184,16 @@ function Campo({
 }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
+      <label className="block text-sm font-medium text-slate-800">{label}</label>
       <input
         type={type}
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm ${
-          error ? 'border-red-400' : 'border-gray-300'
+        className={`mt-1 block w-full rounded-md border bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 ${
+          error
+            ? 'border-red-400 focus:border-red-400 focus:ring-red-400'
+            : 'border-slate-300 focus:border-[#03dbd0] focus:ring-[#03dbd0]'
         }`}
       />
       {error && <p className="mt-1 text-sm text-red-600">{error}</p>}
