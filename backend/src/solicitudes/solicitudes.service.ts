@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { calcularCuotaMensual } from '../common/calcular-cuota.util.js';
 import { TASA_INTERES_ANUAL } from '../common/config.js';
 import { CreateSolicitudDto } from './dto/create-solicitud.dto.js';
 import { QuerySolicitudesDto } from './dto/query-solicitudes.dto.js';
+import { UpdateEstadoDto } from './dto/update-estado.dto.js';
+import { Prisma } from '../generated/prisma/client.js';
 
 /**
  * Prisma devuelve `monto` y `cuotaMensual` como Decimal (para no perder precisión
@@ -38,6 +40,24 @@ export class SolicitudesService {
     });
 
     return serializar(solicitud);
+  }
+
+  async updateEstado(id: number, dto: UpdateEstadoDto) {
+    try {
+      const solicitud = await this.prisma.solicitud.update({
+        where: { id },
+        data: { estado: dto.estado },
+      });
+      return serializar(solicitud);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(`No existe una solicitud con id ${id}`);
+      }
+      throw error;
+    }
   }
 
   async findAll(query: QuerySolicitudesDto) {
