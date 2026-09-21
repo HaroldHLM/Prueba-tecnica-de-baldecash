@@ -3,7 +3,7 @@
 Prueba técnica FullStack Developer Junior. API que registra y consulta solicitudes de
 financiamiento de laptops/equipos electrónicos, más una interfaz web para enviarlas y revisarlas.
 
-**Estado actual:** Paso 1 completado (proyecto backend + base de datos + migraciones).
+**Estado actual:** Paso 1 completado y verificado: migración aplicada y 3 solicitudes sembradas en PostgreSQL local.
 Este README se actualiza al final de cada fase.
 
 ## Stack
@@ -52,7 +52,7 @@ cp .env.example .env
 
 | Variable       | Descripción                                    | Valor por defecto (docker-compose)                              |
 | -------------- | ----------------------------------------------- | ----------------------------------------------------------------- |
-| `DATABASE_URL` | Cadena de conexión a PostgreSQL.                 | `postgresql://baldecash:baldecash@localhost:5432/baldecash`       |
+| `DATABASE_URL` | Cadena de conexión a PostgreSQL.                 | `postgresql://baldecash:baldecash@localhost:5435/baldecash`       |
 
 ### 3. Levantar PostgreSQL
 
@@ -60,7 +60,7 @@ cp .env.example .env
 docker compose up -d
 ```
 
-Esto levanta un contenedor `postgres:16-alpine` en el puerto `5432` con las credenciales
+Esto levanta un contenedor `postgres:16-alpine` en el puerto `5435` con las credenciales
 de `.env.example`.
 
 ### 4. Generar el cliente de Prisma, migrar y sembrar datos
@@ -115,17 +115,27 @@ npm run start:dev
   `prisma/seed.ts` como el servicio del backend en el Paso 2, evitando duplicar la
   fórmula de amortización francesa en dos lugares.
 
-## Qué dejé fuera de este paso (y por qué)
+## Problemas reales que aparecieron al levantar el proyecto (documentados, no escondidos)
 
-- No se ejecutaron `docker compose up`, `prisma migrate dev` ni `prisma db seed` de forma
-  automatizada al construir este entregable: se preparó desde un entorno sandboxeado sin
-  acceso de red a `binaries.prisma.sh` (dominio que Prisma usa para descargar su motor de
-  esquema) ni a Docker. Todos los archivos de configuración quedaron listos y validados
-  donde fue posible sin esa dependencia (instalación de `npm`, sintaxis de `schema.prisma`,
-  y la fórmula de la cuota verificada de forma aislada contra el ejemplo del enunciado:
-  P=3000, n=12 → S/ 283.68). Los comandos de la sección "Cómo levantar el proyecto" deben
-  correr una vez en un entorno con Docker y red completa para generar la migración inicial
-  real y sembrar los datos.
+- **Puerto 5432 ocupado:** ya había otro PostgreSQL corriendo en la máquina de desarrollo
+  en ese puerto. Se cambió el mapeo de `docker-compose.yml` a `5433`, y luego a `5435` al
+  detectar que también había algo más escuchando en `5433`. **Lección:** al cambiar el
+  puerto en `docker-compose.yml` hay que actualizar `DATABASE_URL` en `.env` (y
+  `.env.example`) en el mismo commit — un desalineamiento entre ambos causó un error de
+  autenticación (`P1000`) que en realidad era "me conecté a un Postgres que no es el mío".
+- **`esbuild`/binario de plataforma incorrecta:** las dependencias se instalaron una vez
+  desde un entorno Linux distinto a la máquina de desarrollo (macOS/arm64), dejando
+  binarios nativos (`@esbuild/linux-arm64`) incompatibles. Se resolvió reinstalando con
+  `rm -rf node_modules package-lock.json && npm install` directamente en la máquina de
+  destino.
+- **`npm install` con la versión por defecto de `prisma`:** el paquete `prisma` en npm
+  apunta hoy (`latest`) a un release candidate de la v8, que no soporta `schema.prisma`
+  clásico. Se fijó la versión exacta `prisma@7.10.0` en `package.json`.
+
+La fórmula de la cuota se verificó de forma aislada contra el ejemplo del enunciado
+(P=3000, n=12 → S/ 283.68) antes de sembrar los datos, y la migración inicial
+(`prisma/migrations/20260921001808_init/`) fue generada por el propio CLI de Prisma
+(`prisma migrate dev`), no escrita a mano.
 
 ## Herramientas de IA utilizadas
 
