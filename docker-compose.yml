@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: baldecash
+      POSTGRES_PASSWORD: baldecash
+      POSTGRES_DB: baldecash
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U baldecash"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "postgresql://baldecash:baldecash@db:5432/baldecash"
+      FRONTEND_URL: "http://localhost:3001"
+      TASA_INTERES_ANUAL: "0.24"
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+
+  frontend:
+    build: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: "http://localhost:3000"
+    ports:
+      - "3001:3001"
+
+volumes:
+  pgdata:
