@@ -124,8 +124,7 @@ Abre `http://localhost:3001`:
 - [x] Tests unitarios del cálculo de la cuota.
 - [x] `PATCH /solicitudes/:id/estado` para cambiar el estado desde el listado.
 - [x] Tasa de interés como variable de entorno (`TASA_INTERES_ANUAL`) en vez de valor fijo.
-- [ ] `docker-compose.yml` que levante el proyecto completo con un comando (solo se
-      dockerizó PostgreSQL; backend y frontend corren con `npm run dev`/`start:dev`).
+- [x] `docker-compose.yml` que levante el proyecto completo (DB + backend + frontend) con un solo comando.
 
 ## Endpoints de la API
 
