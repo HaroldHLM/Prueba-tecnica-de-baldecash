@@ -7,11 +7,6 @@ import { QuerySolicitudesDto } from './dto/query-solicitudes.dto.js';
 import { UpdateEstadoDto } from './dto/update-estado.dto.js';
 import { Prisma } from '../generated/prisma/client.js';
 
-/**
- * Prisma devuelve `monto` y `cuotaMensual` como Decimal (para no perder precisión
- * en la base de datos). Los convertimos a `number` solo al salir por la API,
- * que es la forma en que el frontend los espera.
- */
 function serializar(solicitud: {
   monto: { toNumber(): number };
   cuotaMensual: { toNumber(): number };

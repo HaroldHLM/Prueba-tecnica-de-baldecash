@@ -30,7 +30,6 @@ export interface ErrorDeCampo {
   motivo: string;
 }
 
-/** Error de validación (422): trae el detalle campo por campo que devuelve el backend. */
 export class ApiValidationError extends Error {
   errores: ErrorDeCampo[];
 

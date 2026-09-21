@@ -1,10 +1,10 @@
 import { IsIn } from 'class-validator';
-
-const ESTADOS_VALIDOS = ['pendiente', 'aprobada', 'rechazada'] as const;
+import { ESTADOS_VALIDOS } from '../estados.constant.js';
+import type { EstadoSolicitud } from '../estados.constant.js';
 
 export class UpdateEstadoDto {
   @IsIn(ESTADOS_VALIDOS, {
     message: 'estado debe ser pendiente, aprobada o rechazada',
   })
-  estado!: (typeof ESTADOS_VALIDOS)[number];
+  estado!: EstadoSolicitud;
 }

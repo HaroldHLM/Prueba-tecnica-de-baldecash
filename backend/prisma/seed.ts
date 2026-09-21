@@ -40,9 +40,6 @@ const solicitudes = [
 ];
 
 async function main() {
-  // Idempotente: si ya hay datos, no vuelve a insertar (importante para que el
-  // seed se pueda correr varias veces sin duplicar, ej. al reiniciar el contenedor
-  // de Docker).
   const existentes = await prisma.solicitud.count();
   if (existentes > 0) {
     console.log(`Ya existen ${existentes} solicitudes. Seed omitido.`);

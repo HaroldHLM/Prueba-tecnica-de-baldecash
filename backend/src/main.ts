@@ -26,9 +26,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      whitelist: true, // descarta campos que no están en el DTO
-      forbidNonWhitelisted: true, // rechaza si envían campos que no existen
-      transform: true, // convierte tipos (ej. query params string -> number)
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
       errorHttpStatusCode: 422,
       exceptionFactory: (errores) =>
         new UnprocessableEntityException({
